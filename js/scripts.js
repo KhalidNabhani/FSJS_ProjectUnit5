@@ -81,7 +81,7 @@ function generateModalWindow(item){
                     <p class="modal-text cap">${item.location.city}</p>
                     <hr>
                      <p class="modal-text">${reformPhoneNumber(item.phone)}</p>
-                     <p class="modal-text">${item.location.street.number} ${item.location.street.name}, ${item.location.city}, ${item.location.country} ${item.location.postcode}</p>
+                     <p class="modal-text">${item.location.street.number} ${item.location.street.name}, ${item.location.city}, ${item.location.state} ${item.location.country} ${item.location.postcode}</p>
                      <p class="modal-text">Birthday: ${reformDob(item.dob.date.slice(0,10))}</p>
                      <p id="edge-message" class="modal-edge-message" ></p>
             </div>
