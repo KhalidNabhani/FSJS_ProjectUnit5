@@ -1,10 +1,8 @@
 
-// const SearchSubmit  = document.querySelector('form');
 const searchSection = document.querySelector(".search-container");
 const searchWord = document.querySelector("#search-input");
 const url = "https://randomuser.me/api/?results=12&gender=male&nat=US";
 const gallery = document.getElementById('gallery');
-let prevModalBtn = document.getElementById('modal-prev');
 let nextModalBtn = document.getElementById('modal-next');
 let closeModal   = document.getElementById('modal-close-btn');
 let allBeforeFilter=[];
@@ -21,12 +19,10 @@ let employeeIndex=0;
      .then(response => response.json()) //convert to jason format
      .then(profiles => {            // call card generator function to display all profiles
          generateDataCard(profiles.results)
-         console.log("profile --> ");
-         console.log(profiles.results);
          employee = profiles.results;
      })
      .then(generateSearchFormHTML) // generate search form
-     .catch(err => console.log(err))
+     .catch(error => console.log(error))
 
 
 
@@ -104,10 +100,10 @@ function generateModalWindow(item){
     /*
         display previous Modal
      */
-    prevModalBtn.addEventListener("click", e => {
+    prevModalBtn.addEventListener("click", () => {
 
         employeeIndex--;
-        if(employeeIndex <0){
+        if(employeeIndex <0+1){
             messageHtml=  "Top of the list";
             let msg = document.getElementById("edge-message");
             msg.innerText=messageHtml;
@@ -123,8 +119,7 @@ function generateModalWindow(item){
     /*
         display next Modal
      */
-    nextModalBtn.addEventListener("click", e =>{
-
+    nextModalBtn.addEventListener("click", () =>{
         employeeIndex++;
         if(employeeIndex+1 > employee.length){
             messageHtml=  "No more in the list";
@@ -135,51 +130,43 @@ function generateModalWindow(item){
             document.body.lastElementChild.remove();
             generateModalWindow(employee[employeeIndex]);
         }
-
     });
     /*
     close Modal
      */
-    closeModal.addEventListener("click", e =>{
+    closeModal.addEventListener("click", () =>{
         document.body.lastElementChild.remove();
 
 
     });
-
-
-
 }
-
-
 /*
     re format phone number to  (xxx) xxx-xxxx
+    @ 2021 Stack Exchange Inc
+     https://stackoverflow.com/questions/8358084/regular-expression-to-reformat-a-us-phone-number-in-javascript/41318684
+
  */
 function reformPhoneNumber(numberString){
-     let number;// = numberString.replace(/\D/g,'-');
-
+    let number;
     /*
       @ 2021 Stack Exchange Inc
      https://stackoverflow.com/questions/8358084/regular-expression-to-reformat-a-us-phone-number-in-javascript/41318684
      */
-
-     let cleaned = ('' + numberString).replace(/\D/g, '');
-     let match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
-     if (match) {
+    let cleaned = ('' + numberString).replace(/\D/g, '');
+    let match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
         let intlCode = (match[1] ? '+1 ' : '');
         number = [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
-
         return number;
-     }
-     return numberString;
-
+    }
+    return numberString;
 }
 
 /*
     reformat date from dd/mm/yyyy to mm/dd/yyyy
  */
 function reformDob(dob){
-
-     return dob.slice(5,7) + '\/'+ dob.slice(8,10) + '\/' + dob.slice(0,4);
+    return dob.slice(5,7) + '\/'+ dob.slice(8,10) + '\/' + dob.slice(0,4);
 }
 
 /*
@@ -193,8 +180,6 @@ searchSection.addEventListener("submit", () =>{
     const searchString =document.getElementById("search-input").value.toLowerCase();
     if(searchString !==''){
         employeeFiltered = employee.filter(item  => item.name.first.toLowerCase().includes(searchString) || item.name.last.toLowerCase().includes(searchString));
-        console.log(employeeFiltered);
-        console.log(employeeFiltered.length);
         generateDataCard(employeeFiltered);
     }else {
         employeeFiltered = allBeforeFilter;
@@ -206,24 +191,15 @@ searchSection.addEventListener("submit", () =>{
     listen to click in any profile to call generateModalWindow
  */
 gallery.addEventListener("click", event => {
-
-
     let card;
-
-    console.log(event.target)
     let item = event.target;
-    console.log( item );
     if(item.className === "card-img-container" || item.className === "card-info-container"){
         card = item.parentNode;
     }else if(item.className === "card-img" || item.className === "card-name cap" || item.className === "card-text" || item.className === "card-text cap"){
         card =item.parentNode.parentNode;
     }else card = item;
     employeeIndex = parseInt(card.dataset.index);
-    console.log(card);
-    console.log(employee[employeeIndex]);
     generateModalWindow(employee[employeeIndex]);
-
-
 })
 
 
